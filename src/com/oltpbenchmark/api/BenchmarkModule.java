@@ -111,12 +111,20 @@ public abstract class BenchmarkModule {
      * @throws SQLException
      */
     public final Connection makeConnection() throws SQLException {
-        Connection conn = DriverManager.getConnection(
+        if (workConf.getDBType().equals(DatabaseType.VOLTDB)){
+            Connection conn = DriverManager.getConnection(
+                workConf.getDBConnection());
+            Catalog.setSeparator(conn);
+            return (conn);
+        }else{
+            Connection conn = DriverManager.getConnection(
                 workConf.getDBConnection(),
                 workConf.getDBUsername(),
                 workConf.getDBPassword());
         Catalog.setSeparator(conn);
         return (conn);
+        }
+        
     }
 
     // --------------------------------------------------------------------------
