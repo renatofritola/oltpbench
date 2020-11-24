@@ -41,6 +41,7 @@ import com.oltpbenchmark.types.DatabaseType;
 import com.oltpbenchmark.util.ClassUtil;
 import com.oltpbenchmark.util.ScriptRunner;
 import com.oltpbenchmark.util.ThreadUtil;
+import java.util.logging.Level;
 
 /**
  * Base class for all benchmark implementations
@@ -112,6 +113,12 @@ public abstract class BenchmarkModule {
      */
     public final Connection makeConnection() throws SQLException {
         if (workConf.getDBType().equals(DatabaseType.VOLTDB)){
+            try {
+                Class.forName("org.voltdb.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                java.util.logging.Logger.getLogger(BenchmarkModule.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("VOLT DB");
             Connection conn = DriverManager.getConnection(
                 workConf.getDBConnection());
             Catalog.setSeparator(conn);
